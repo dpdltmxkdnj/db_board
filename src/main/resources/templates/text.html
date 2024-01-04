@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Title</title>
+</head>
+<body>
+    <div class="container" style="max-width: 600px">
+        <div class="py-5">
+            <h2 class="d-flex justify-content-center">글 정보</h2>
+            <div class="d-flex p-3">
+                <div class="me-auto" th:text="${userText.username}">우까우까꾸 </div>
+                <div class="d-flex justify-content-end">
+
+                    <div th:text="|조회: ${userText.texts[0].viewCount}|">조회:</div>
+                    <div th:text="|추천: ${userText.texts[0].likeCount}|" class="mx-3">추천:</div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">제목</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" th:field="${userText.texts[0].title}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">내용</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" style="resize: none;height: 300px" th:field="${userText.texts[0].text}" disabled></textarea>
+            </div>
+            <div class="d-flex justify-content-center">
+                <div th:if="${isMyThing}">
+                <button class="btn btn-primary  me-3"
+                        type="button"
+                        th:onclick="|location.href='@{/home/{contentId}/edit(contentId=${userText.texts[0].contentId})}'|"
+                >수정하기</button>
+                </div>
+                <div th:if="${!isMyThing}">
+                    <button class="btn btn-primary  me-3"
+                            type="button"
+                            onclick="notMyThing()"
+                    >수정하기</button>
+                </div>
+                <button class="btn btn-primary  ms-3"
+                        type="button"
+                        th:onclick="|location.href='@{/home}'|"
+                >돌아가기</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="application/javascript" th:inline="javascript">
+    function notMyThing() {
+        alert("작성자만 수정 가능합니다.")
+    }
+</script>
+</html>

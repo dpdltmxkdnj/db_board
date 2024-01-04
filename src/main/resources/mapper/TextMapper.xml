@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis_db.board.repository.TextMapper">
+    <insert id="save">
+        insert into content (title, text, date_created,user_id)
+        values (#{title}, #{text}, #{dateCreated},#{userId})
+--             all fields : content_id, title, text, date_created, view_count, like_count, unlike_count
+    </insert>
+    <update id="update">
+        update content
+        set title=#{textUpdateDto.title},
+            text=#{textUpdateDto.text}
+        where content_id=#{id}
+    </update>
+    <select id="findById" resultType="Text">
+        select content_id, title, text, date_created, view_count, like_count, unlike_count
+        from content
+        where content_id=#{id}
+    </select>
+    <select id="findAll" resultType="Text">
+        select *
+        from content
+    </select>
+</mapper>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Title</title>
+    <style>
+        a {
+            color: inherit; /* 링크 색상을 부모 요소의 색상으로 상속 */
+            text-decoration: none; /* 밑줄 제거 */
+        }
+
+        a:hover {
+            color: inherit; /* hover 상태에서도 링크 색상을 부모 요소의 색상으로 상속 */
+            text-decoration: none; /* hover 상태에서도 밑줄 제거 */
+        }
+    </style>
+</head>
+<body>
+<div class="container"  style="max-width: 800px">
+    <h2 class="text-center py-5">게시판</h2>
+    <div class="d-flex justify-content-end">
+        <th:block sec:authorize="isAnonymous()">
+
+        <form name="login" style="width:30%" class="form-control mb-5">
+            <div class="d-flex flex-column">
+                <button type="button" class="btn btn-primary mb-1" th:onclick="|location.href='@{/login}'|">로그인</button>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="button"  th:onclick="|location.href='@{/login/register}'|" style="text-decoration: none;" class="btn btn-secondary form-control" >회원가입</button>
+            </div>
+        </form>
+
+        </th:block>
+        <th:block sec:authorize="isAuthenticated()">
+
+            <form th:action="@{/logout}" method="post" style="width:30%" class="form-control mb-5">
+                <!-- 인증 받음 -->
+                <div th:if="${!loginId.isBlank()}" th:text="|환영합니다 ${loginId}님|"></div>
+                <button  class="d-flex justify-content-center form-control" style="background-color: #0dcaf0">로그아웃</button>
+            </form>
+
+        </th:block>
+    </form>
+    </div>
+    <table class="table table-hover text-center">
+        <thead class="table-dark">
+        <tr>
+            <th>번호</th>
+            <th colspan="3">제목</th>
+            <th>작성자</th>
+            <th>날짜</th>
+            <th>조회수</th>
+            <th>추천</th>
+        </tr>
+        </thead>
+        <tbody class="table-group-divider">
+
+            <th:block th:each="text:${texts}">
+                <tr th:each="userText:${text.texts}">
+                    <td th:text="${userText.contentId}">1</td>
+                    <td colspan="3"><a th:href="@{/home/{textId}(textId=${userText.contentId})}" th:text="${userText.title}">ㅋㅋzzzzzzzzzzzzzz</a></td>
+                    <td th:text="${text.username}">dd</td>
+                    <td th:text="${userText.dateCreated}">2016.01.01</td>
+                    <td th:text="${userText.viewCount}">1</td>
+                    <td th:text="${userText.likeCount}">3</td>
+                </tr>
+            </th:block>
+        </tbody>
+    </table>
+    <hr/>
+    <div class="d-flex">
+        <form class="d-flex form-control-sm">
+            <select class="form-select form-select-sm w-50" aria-label="Default select example" name="searchType">
+                <option th:each="type:${textSearchType}" th:value="${type.getTypeName()}" th:text="${type.getTypeValue()}" th:selected="${searchType==type.getTypeName()}"></option>
+            </select>
+            <input class="form-control" th:value="${searchTypeValue}" name="searchTypeValue">
+            <button class="btn btn-secondary btn-sm " style="white-space:nowrap;" type="submit">검색</button>
+        </form>
+        <div class="d-flex flex-grow-1 justify-content-end">
+            <button class="btn btn-secondary btn-sm" type="button" th:onclick="|location.href='@{/home/add}'|">글쓰기</button>
+        </div>
+    </div>
+
+    <div>
+        <ul class="pagination justify-content-center py-3">
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true"> &lsaquo;</span>
+                </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&rsaquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
