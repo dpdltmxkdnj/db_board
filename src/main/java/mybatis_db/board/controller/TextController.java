@@ -1,14 +1,15 @@
 package mybatis_db.board.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import mybatis_db.board.domain.Text;
-import mybatis_db.board.domain.TextSearchType;
-import mybatis_db.board.domain.TextSearchValue;
-import mybatis_db.board.domain.User;
+import mybatis_db.board.domain.*;
 import mybatis_db.board.dto.TextSaveDto;
 import mybatis_db.board.dto.TextUpdateDto;
 import mybatis_db.board.service.TextService;
 import mybatis_db.board.service.UserService;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,8 +19,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Array;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,20 +41,36 @@ public class TextController {
         return textSearchType;
     }
     @GetMapping("/home")
-    public String home(Model model,RedirectAttributes redirectAttributes,@RequestParam(name = "searchType",required = false) String searchType,@RequestParam(name = "searchTypeValue",required = false) String searchTypeValue) {
-        List<User> allUser = null;
-        if (searchType!=null && searchTypeValue!=null && searchType.equals("제목") && !searchTypeValue.isBlank()) {
-            allUser = userService.findAllUserTextByTitle(searchTypeValue);
-        } else if (searchType!=null && searchTypeValue!=null  && searchType.equals("작성자") && !searchTypeValue.isBlank()) {
-            allUser = userService.findAllUserTextByUsername(searchTypeValue);
-        } else if (searchType!=null && searchTypeValue!=null  && searchType.equals("전체") && !searchTypeValue.isBlank()){
-            allUser = userService.findAllUserTextByUsernameAndTitle(searchTypeValue);
-        }else{
-            allUser = userService.findAllUserText();
+    public String home(Model model,@RequestParam(name = "page",required = false,defaultValue = "1") Integer currentPage,@RequestParam(name = "searchType",required = false) String searchType,@RequestParam(name = "searchValue",required = false) String searchValue) {
+
+        List<User> allUserTexts = null;
+        int allTextCount = textService.allTextCount();
+
+        int pageSize=10;
+        int allPageButton=allTextCount%pageSize==0?allTextCount/pageSize:allTextCount/pageSize+1;
+
+
+
+
+        if (searchType != null && searchValue != null && searchType.equals("제목") && !searchValue.isBlank()) {
+            allUserTexts = userService.findAllUserTextByTitle(searchValue);
+        } else if (searchType != null && searchValue != null && searchType.equals("작성자") && !searchValue.isBlank()) {
+            allUserTexts = userService.findAllUserTextByUsername(searchValue);
+        } else if (searchType != null && searchValue != null && searchType.equals("전체") && !searchValue.isBlank()) {
+            allUserTexts = userService.findAllUserTextByUsernameAndTitle(searchValue);
+        } else {
+            int pageChange=(currentPage-1)*10;
+            allUserTexts = userService.selectWithPaging(new PageRequest(pageChange, pageSize));
         }
+
+        model.addAttribute("allPageButton", allPageButton);
+        model.addAttribute("allTextCount", allTextCount);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("currentPage", currentPage);
+
         model.addAttribute("searchType", searchType);
-        model.addAttribute("searchTypeValue", searchTypeValue);
-        model.addAttribute("texts",allUser);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("allUserTexts",allUserTexts);
         isLogin(model);
 
         return "home";
@@ -88,6 +107,11 @@ public class TextController {
         boolean isMyThing = false;
 
         User userText = userService.findUserText(id);
+        textService.increaseViewCount(id);
+
+        List<Comment> comments = textService.findCommentById(id);
+        System.out.println(comments);
+        model.addAttribute("comments", comments);
         model.addAttribute("userText", userText);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -97,12 +121,13 @@ public class TextController {
             isMyThing=true;
         }
         model.addAttribute("isMyThing", isMyThing);
+        model.addAttribute("loginId", loginId);
 
         return "text";
     }
     @GetMapping("/home/{contentId}/edit")
     public String textEdit(@PathVariable(name = "contentId") Long id,Model model) {
-        Text text = textService.findById(id);
+         Text text = textService.findById(id);
         model.addAttribute("text", text);
         return "editText";
     }
@@ -114,5 +139,35 @@ public class TextController {
        textService.update(id,textUpdateDto);
 
         return "redirect:/home";
+    }
+
+    @PostMapping("/home/updateLikeCount")
+    @ResponseBody
+    public Map<String, Long> updateLikeCount(@RequestBody Map<String, Long> jsonValue) {
+        Long likeCount =  jsonValue.get("count");
+        Long contentId =  jsonValue.get("id");
+        textService.increaseLikeCount(contentId);
+
+        Map<String, Long> response = new HashMap<>();
+        response.put("likeCount", likeCount);
+
+        return response;
+    }
+    @PostMapping("/home/addComment")
+    @ResponseBody
+    public Comment addComment(@RequestBody Map<String, String> jsonValue) {
+        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = userService.findById(loginId).getUsername();
+
+        String text =  jsonValue.get("text");
+        String contentId =  jsonValue.get("id");
+
+        LocalDateTime now = LocalDateTime.now();
+        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        Comment comment = new Comment(contentId, text, username,formatedNow);
+
+        textService.addComment(comment);
+
+        return comment;
     }
 }

@@ -14,7 +14,6 @@
                 <div class="d-flex justify-content-end">
 
                     <div th:text="|조회: ${userText.texts[0].viewCount}|">조회:</div>
-                    <div th:text="|추천: ${userText.texts[0].likeCount}|" class="mx-3">추천:</div>
                 </div>
             </div>
             <div class="mb-3">
@@ -24,6 +23,11 @@
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">내용</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" style="resize: none;height: 300px" th:field="${userText.texts[0].text}" disabled></textarea>
+            </div>
+
+            <div style="display: flex;justify-content: center" class="mb-3">
+                <button style="background-color:white;border:none;font-size: 35px" onclick="recommend()">👍</button>
+                <div  style="font-size: 35px"  class="mx-3" id="likeCount" th:text="'추천: '+${userText.texts[0].likeCount}">추천:</div>
             </div>
             <div class="d-flex justify-content-center">
                 <div th:if="${isMyThing}">
@@ -40,15 +44,123 @@
                 </div>
                 <button class="btn btn-primary  ms-3"
                         type="button"
-                        th:onclick="|location.href='@{/home}'|"
+                        onclick="goBack()"
                 >돌아가기</button>
             </div>
+            <div class="my-3">
+                <textarea class="form-control" style="resize: none;height: 100px" id="commentText"></textarea>
+                <button th:if="${loginId!='anonymousUser'}" class="btn btn-primary float-end my-3" onclick="addComment()" >댓글 등록</button>
+                <button th:if="${loginId=='anonymousUser'}" class="btn btn-primary float-end my-3" onclick="afterLoginComment()" >댓글 등록</button>
+
+            </div>
+            <table class="table table-hover text-center" style="table-layout: fixed;">
+                <colgroup>
+                    <col style="width: 10%">
+                    <col style="width: 70%">
+                    <col style="width: 20%">
+                </colgroup>
+
+
+                <tbody class="table-group-divider">
+                    <tr th:each="comment:${comments}">
+                        <td th:text="${comment.username}">dd</td>
+                        <td th:text="${comment.text}" style="word-break: break-all"><p>ㅋㅋzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz</p></td>
+                        <td th:text="${comment.dateCreated}" style="font-size: 12px">2016.01.01 21:33:22</td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
     </div>
 </body>
 <script type="application/javascript" th:inline="javascript">
+    let likeCount = [[${userText.texts[0].likeCount}]];
+    let contentId = [[${userText.texts[0].contentId}]];
     function notMyThing() {
         alert("작성자만 수정 가능합니다.")
+    }
+    function goBack() {
+        window.history.back();
+    }
+    function afterLoginComment() {
+        alert("로그인 후 댓글 작성 가능합니다.")
+    }
+
+    // 추천 버튼 클릭시 실행되는 JavaScript 함수
+    function recommend() {
+        // 추천 수 1 증가
+        likeCount++;
+        // AJAX 통신
+        fetch('/home/updateLikeCount', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                count: likeCount,
+                id: contentId
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // 서버에서 받아온 데이터로 화면 업데이트
+                document.getElementById('likeCount').innerText = `추천: ${data.likeCount}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function addComment() {
+        const commentText= document.getElementById('commentText').value;
+        const tbody = document.querySelector('tbody');
+        // AJAX 통신
+        fetch('/home/addComment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: contentId,
+                text:commentText
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // 반복문을 통해 여러 개의 <tr> 생성
+
+                    // 새로운 <tr> 요소 생성
+                    let tr = document.createElement('tr');
+
+                    // 첫 번째 <td> 생성
+                    let td1 = document.createElement('td');
+                    td1.textContent = data.username;
+                    tr.appendChild(td1);
+
+                    // 두 번째 <td> 생성
+                    let td2 = document.createElement('td');
+                    td2.style.wordBreak = 'break-all';
+
+                    let p = document.createElement('p');
+                    p.textContent = data.text;
+                    td2.appendChild(p);
+
+                    tr.appendChild(td2);
+
+                    // 세 번째 <td> 생성
+                    let td3 = document.createElement('td');
+                    td3.style.fontSize = '12px';
+                    td3.textContent = data.dateCreated;
+                    tr.appendChild(td3);
+
+                    // tbody에 생성한 <tr> 추가
+                    tbody.appendChild(tr);
+
+                    document.getElementById('commentText').value="";
+
+                // document.getElementById('likeCount').innerText = `추천: ${data.likeCount}`;
+            })
     }
 </script>
 </html>

@@ -2,6 +2,7 @@ package mybatis_db.board.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mybatis_db.board.domain.PageRequest;
 import mybatis_db.board.domain.User;
 import org.springframework.stereotype.Repository;
 
@@ -37,5 +38,7 @@ public class UserRepository {
     public List<User> findAllUserTextByUsernameAndTitle(String usernameAndTitle) {
         return userMapper.findAllUserTextByUsernameAndTitle(usernameAndTitle);
     }
-
+    public List<User> selectWithPaging(PageRequest pageRequest) {
+        return userMapper.selectWithPaging(pageRequest);
+    }
 }

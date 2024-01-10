@@ -22,4 +22,28 @@
         select *
         from content
     </select>
+    <select id="allTextCount" resultType="int">
+        select count(*)
+        from content;
+    </select>
+    <update id="increaseViewCount">
+        update content
+        set view_count=view_count+1
+        where content_id=#{id}
+    </update>
+    <update id="increaseLikeCount">
+        update content
+        set like_count=like_count+1
+        where content_id=#{id}
+    </update>
+    <insert id="addComment">
+        insert into comment (comment_id, content_id, text, date_created, username)
+        values (#{commentId}, #{contentId}, #{text},#{dateCreated},#{username})
+--             all fields : content_id, title, text, date_created, view_count, like_count, unlike_count
+    </insert>
+    <select id="findCommentById" resultType="Comment">
+        select *
+        from comment
+        where content_id=#{id}
+    </select>
 </mapper>

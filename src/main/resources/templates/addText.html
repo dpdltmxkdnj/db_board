@@ -32,11 +32,16 @@
                         type="submit">저장하기</button>
                 <button class="btn btn-primary  ms-3"
                         type="button"
-                        onclick="location.href='texts.html'"
-                        th:onclick="|location.href='@{/home}'|"
+                        onclick="goBack()"
                 >돌아가기</button>
             </div>
         </form>
 </div>
 </body>
+<script type="application/javascript" th:inline="javascript">
+
+    function goBack() {
+        window.history.back();
+    }
+</script>
 </html>

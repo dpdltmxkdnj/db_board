@@ -2,6 +2,8 @@ package mybatis_db.board.domain;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Text {
     private Long contentId;
@@ -12,6 +14,8 @@ public class Text {
     private Integer likeCount;
     private Integer unlikeCount;
     private Long userId;
+    private List<Comment> comments;
+
     public Text() {
     }
     public Text(String title, String text) {

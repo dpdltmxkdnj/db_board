@@ -2,6 +2,7 @@ package mybatis_db.board.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mybatis_db.board.domain.Comment;
 import mybatis_db.board.domain.Text;
 import mybatis_db.board.dto.TextUpdateDto;
 import java.util.List;
@@ -30,4 +31,22 @@ public class TextRepository{
     public void update(Long id, TextUpdateDto textUpdateDto) {
         textMapper.update(id,textUpdateDto);
     }
+
+    public int allTextCount() {
+        return textMapper.allTextCount();
+    }
+    public void increaseViewCount(Long id) {
+         textMapper.increaseViewCount(id);
+    }
+    public void increaseLikeCount(Long id) {
+        textMapper.increaseLikeCount(id);
+    }
+    public void addComment(Comment comment) {
+        textMapper.addComment(comment);
+    }
+
+    public List<Comment> findCommentById(Long id) {
+        return textMapper.findCommentById(id);
+    }
+
 }

@@ -1,5 +1,6 @@
 package mybatis_db.board.repository;
 
+import mybatis_db.board.domain.PageRequest;
 import mybatis_db.board.domain.Text;
 import mybatis_db.board.domain.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,5 +18,5 @@ public interface UserMapper {
 
     List<User> findAllUserTextByUsername(String username);
     List<User> findAllUserTextByUsernameAndTitle(String usernameAndTitle);
-
+    List<User> selectWithPaging(PageRequest pageRequest);
 }

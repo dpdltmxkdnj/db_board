@@ -10,6 +10,20 @@
     <insert id="save">
         insert into user (login_id, password,username,date_created) values (#{loginId},#{password},#{username},#{dateCreated})
     </insert>
+    <select id="selectWithPaging" resultMap="userText">
+        select c.content_id as contentId,
+               c.title as title,
+               c.text as text,
+               c.date_created as dateCreated,
+               c.view_count as viewCount,
+               c.like_count as likeCount,
+               c.unlike_count as unlikeCount,
+               u.login_id as loginId,
+               u.username as username,
+               u.user_id as userId
+                from content c,user u
+                where c.user_id=u.user_id order by c.date_created desc limit #{size} offset #{page};
+    </select>
 
 <!--    <select id="findAllUser">-->
 <!--        select c.content_id as contentId,-->

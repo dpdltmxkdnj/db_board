@@ -1,6 +1,7 @@
 package mybatis_db.board.service;
 
 import lombok.RequiredArgsConstructor;
+import mybatis_db.board.domain.PageRequest;
 import mybatis_db.board.domain.Text;
 import mybatis_db.board.domain.User;
 import mybatis_db.board.dto.UserLoginRegisterDto;
@@ -51,5 +52,8 @@ public class UserService {
     }
     public List<User> findAllUserTextByUsernameAndTitle(String usernameAndTitle) {
         return userRepository.findAllUserTextByUsernameAndTitle(usernameAndTitle);
+    }
+    public List<User> selectWithPaging(PageRequest pageRequest) {
+        return userRepository.selectWithPaging(pageRequest);
     }
 }

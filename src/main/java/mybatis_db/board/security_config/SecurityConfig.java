@@ -1,4 +1,5 @@
 package mybatis_db.board.security_config;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import mybatis_db.board.filter.CsrfCookieFilter;
 import org.springframework.context.annotation.Bean;
@@ -8,12 +9,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Collections;
 
 import static org.yaml.snakeyaml.tokens.Token.ID.Directive;
 
@@ -23,7 +29,7 @@ import static org.yaml.snakeyaml.tokens.Token.ID.Directive;
 public class SecurityConfig {
     private final LoginFailHandler loginFailHandler;
     private final LoginSuccessHandler loginSuccessHandler;
-
+    private final AuthenticationEntryPoint ajaxLoginAuthenticationEntryPoint;
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
@@ -32,7 +38,19 @@ public class SecurityConfig {
 
         http.securityContext((context) -> context
                         .requireExplicitSave(false))
-                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/contact", "/register")
+                .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
+                        config.setAllowedMethods(Collections.singletonList("*"));
+                        config.setAllowCredentials(true);
+                        config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setMaxAge(3600L);
+                        return config;
+                    }
+                }))
+                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/home/updateLikeCount","/home/addComment")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests((requests)->requests.requestMatchers("/home/add").authenticated()
                         .anyRequest().permitAll())
@@ -42,22 +60,16 @@ public class SecurityConfig {
                         .passwordParameter("password")
                                 .successHandler(loginSuccessHandler)
                                 .failureHandler(loginFailHandler)
-//                                .defaultSuccessUrl("/home")
-//                        .failureUrl("/login")
-//                        .loginProcessingUrl("login")
-
-//                        .permitAll()
-
                 )
+
                 .logout(customizer -> customizer
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/home")
-//                        .addLogoutHandler(clearSiteData)
-//                        .permitAll()
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )
+//                .exceptionHandling(exceptionHandling->exceptionHandling.authenticationEntryPoint(ajaxLoginAuthenticationEntryPoint))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults());
 
