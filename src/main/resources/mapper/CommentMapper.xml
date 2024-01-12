@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis_db.board.repository.CommentMapper">
+
+    <insert id="addParentComment">
+        insert into comment (comment_id, content_id, text, date_created, username,login_id)
+        values (#{commentId}, #{contentId}, #{text},#{dateCreated},#{username},#{loginId})
+--             all fields : content_id, title, text, date_created, view_count, like_count, unlike_count
+    </insert>
+    <insert id="addComment">
+        insert into comment (comment_id, content_id, text, date_created, username,level,login_id)
+        values (#{commentId}, #{contentId}, #{text},#{dateCreated},#{username},#{level},#{loginId})
+--             all fields : content_id, title, text, date_created, view_count, like_count, unlike_count
+    </insert>
+    <select id="findCommentParentId" resultType="Comment">
+
+        select * from comment
+        where content_id=#{contentId}
+          and comment_id is null
+        order by parent_id desc
+            limit 1;
+    </select>
+    <select id="findCommentById" resultMap="findComments">
+        select
+            a.parent_id as parent_id,
+            a.comment_id as comment_id,
+            a.level as level,
+            a.content_id as content_id,
+            a.text as text,
+            a.date_created as date_created,
+            a.username as username,
+            a.login_id as login_id,
+
+            b.parent_id as bParentId,
+            b.comment_id as bCommentId,
+            b.level as bLevel,
+            b.content_id as bContentId,
+            b.text as bText,
+            b.date_created as bDateCreated,
+            b.username as bUsername,
+            b.login_id as bLogin_id
+
+        from
+            comment a
+                left join
+            comment b ON a.parent_id=b.comment_id
+        where
+            a.level = 0 and a.content_id=#{contentId}
+    </select>
+
+    <resultMap id="findComments" type="Comment">
+        <id property="parentId" column="parent_id" />
+        <result property="commentId" column="comment_id"/>
+        <result property="level" column="level"/>
+        <result property="contentId" column="content_id"/>
+        <result property="text" column="text"/>
+        <result property="dateCreated" column="date_created"/>
+        <result property="username" column="username"/>
+        <result property="loginId" column="login_id"/>
+        <collection property="commentList" ofType="Comment">
+            <id property="parentId" column="bParentId" />
+            <result property="commentId" column="bCommentId"/>
+            <result property="level" column="bLevel"/>
+            <result property="contentId" column="bContentId"/>
+            <result property="text" column="bText"/>
+            <result property="dateCreated" column="bDateCreated"/>
+            <result property="username" column="bUsername"/>
+            <result property="loginId" column="bLogin_id"/>
+
+        </collection>
+    </resultMap>
+</mapper>

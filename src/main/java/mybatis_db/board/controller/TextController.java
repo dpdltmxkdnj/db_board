@@ -2,10 +2,12 @@ package mybatis_db.board.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mybatis_db.board.domain.*;
 import mybatis_db.board.dto.TextSaveDto;
 import mybatis_db.board.dto.TextUpdateDto;
+import mybatis_db.board.service.CommentService;
 import mybatis_db.board.service.TextService;
 import mybatis_db.board.service.UserService;
 import org.springframework.http.HttpRequest;
@@ -30,7 +32,7 @@ public class TextController {
 
     private final TextService textService;
     private final UserService userService;
-
+    private final CommentService commentService;
     @ModelAttribute("textSearchType")
     public List<TextSearchType> textSearchType() {
         List<TextSearchType> textSearchType = new ArrayList<>();
@@ -62,7 +64,6 @@ public class TextController {
             int pageChange=(currentPage-1)*10;
             allUserTexts = userService.selectWithPaging(new PageRequest(pageChange, pageSize));
         }
-
         model.addAttribute("allPageButton", allPageButton);
         model.addAttribute("allTextCount", allTextCount);
         model.addAttribute("pageSize", pageSize);
@@ -90,7 +91,7 @@ public class TextController {
         return "addText";
     }
     @PostMapping("/home/add")
-    public String textSave(@Validated @ModelAttribute("text") TextSaveDto textSaveDto, BindingResult bindingResult,Model model) {
+    public String textSave(@Valid @ModelAttribute("text") TextSaveDto textSaveDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()){
             return "addText";
         }
@@ -109,9 +110,9 @@ public class TextController {
         User userText = userService.findUserText(id);
         textService.increaseViewCount(id);
 
-        List<Comment> comments = textService.findCommentById(id);
-        System.out.println(comments);
-        model.addAttribute("comments", comments);
+        List<Comment> parentComments = commentService.findCommentById(id);
+        System.out.println(parentComments);
+        model.addAttribute("parentComments", parentComments);
         model.addAttribute("userText", userText);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -132,7 +133,7 @@ public class TextController {
         return "editText";
     }
     @PostMapping("/home/{contentId}/edit")
-    public String textEditSave(@PathVariable(name = "contentId") Long id, @Validated @ModelAttribute("text") TextUpdateDto textUpdateDto,BindingResult bindingResult) {
+    public String textEditSave(@PathVariable(name = "contentId") Long id, @Valid @ModelAttribute("text") TextUpdateDto textUpdateDto,BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "editText";
         }
@@ -153,21 +154,5 @@ public class TextController {
 
         return response;
     }
-    @PostMapping("/home/addComment")
-    @ResponseBody
-    public Comment addComment(@RequestBody Map<String, String> jsonValue) {
-        String loginId = SecurityContextHolder.getContext().getAuthentication().getName();
-        String username = userService.findById(loginId).getUsername();
 
-        String text =  jsonValue.get("text");
-        String contentId =  jsonValue.get("id");
-
-        LocalDateTime now = LocalDateTime.now();
-        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Comment comment = new Comment(contentId, text, username,formatedNow);
-
-        textService.addComment(comment);
-
-        return comment;
-    }
 }

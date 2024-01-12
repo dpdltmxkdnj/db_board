@@ -1,5 +1,6 @@
 package mybatis_db.board.security_config;
 
+import lombok.RequiredArgsConstructor;
 import mybatis_db.board.domain.User;
 import mybatis_db.board.exception.PassWordNotFoundException;
 import mybatis_db.board.repository.UserRepository;
@@ -22,12 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class BoardAuthenticationProvider implements AuthenticationProvider {
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

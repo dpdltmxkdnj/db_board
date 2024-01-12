@@ -4,10 +4,27 @@
     <meta charset="UTF-8">
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <title>Title</title>
+    <style>
+        .comment-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .reply {
+            margin-left: 25px; /* 대댓글은 왼쪽으로 들여쓰기 */
+        }
+        .reply-container {
+            display: none;
+            margin-top: 10px;
+        }
+        .replyButton{
+            display: flex;
+            justify-content: end
+        }
+    </style>
 </head>
 <body>
     <div class="container" style="max-width: 600px">
-        <div class="py-5">
             <h2 class="d-flex justify-content-center">글 정보</h2>
             <div class="d-flex p-3">
                 <div class="me-auto" th:text="${userText.username}">우까우까꾸 </div>
@@ -48,40 +65,87 @@
                 >돌아가기</button>
             </div>
             <div class="my-3">
-                <textarea class="form-control" style="resize: none;height: 100px" id="commentText"></textarea>
-                <button th:if="${loginId!='anonymousUser'}" class="btn btn-primary float-end my-3" onclick="addComment()" >댓글 등록</button>
+                <textarea class="form-control" style="resize: none;height: 100px" id="parentCommentText"></textarea>
+                <button th:if="${loginId!='anonymousUser'}" class="btn btn-primary float-end my-3" onclick="addParentComment()" >댓글 등록</button>
                 <button th:if="${loginId=='anonymousUser'}" class="btn btn-primary float-end my-3" onclick="afterLoginComment()" >댓글 등록</button>
 
             </div>
-            <table class="table table-hover text-center" style="table-layout: fixed;">
-                <colgroup>
-                    <col style="width: 10%">
-                    <col style="width: 70%">
-                    <col style="width: 20%">
-                </colgroup>
 
-
-                <tbody class="table-group-divider">
-                    <tr th:each="comment:${comments}">
-                        <td th:text="${comment.username}">dd</td>
-                        <td th:text="${comment.text}" style="word-break: break-all"><p>ㅋㅋzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz</p></td>
-                        <td th:text="${comment.dateCreated}" style="font-size: 12px">2016.01.01 21:33:22</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
+<!--            <table class="table table-hover text-center" style="table-layout: fixed;">-->
+<!--                <colgroup>-->
+<!--                    <col style="width: 20%">-->
+<!--                    <col style="width: 60%">-->
+<!--                    <col style="width: 20%">-->
+<!--                </colgroup>-->
+<!--                <tbody class="table-group-divider">-->
+<!--                    <tr th:each="comment:${comments}">-->
+<!--                        <td th:text="${comment.username}">dd</td>-->
+<!--                        <td th:text="${comment.text}" style="word-break: break-all"><p>ㅋㅋzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz</p></td>-->
+<!--                        <td th:text="${comment.dateCreated}" style="font-size: 12px">2016.01.01 21:33:22<button>답글</button></td>-->
+<!--                        <tr>-->
+<!--                             <td>-->
+<!--                                우하하-->
+<!--                            </td>-->
+<!--                        <td>-->
+<!--                            우하하-->
+<!--                        </td><td>-->
+<!--                        우하하-->
+<!--                    </td>-->
+<!--                        </tr>-->
+<!--                    </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+                <div class="mb-5 comment-containers">
+                <th:block th:each="parentComment:${parentComments}">
+                    <div class="comment-container">
+                        <div th:text="${parentComment.username}">dd</div>
+                        <div th:text="${parentComment.text}" style="word-break: break-all"><p>ㅋㅋzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz</p></div>
+                        <div th:text="${parentComment.dateCreated}" style="font-size: 12px">2016.01.01 21:33:22</div>
+                        <button class="btn btn-secondary mb-3" style="width: 10%" onclick="toggleReply(this)">답글</button>
+                        <div class="reply-container">
+                            <textarea style="resize: none" id="commentText"></textarea>
+                            <div class="replyButton">
+                                <button type="button" class="btn btn-dark" style="width: 10%;" th:if="${loginId!='anonymousUser'}" th:onclick="'addComment(' + ${parentComment.parentId} + ',this)'">등록</button>
+                                <button type="button" class="btn btn-dark" style="width: 10%;" th:if="${loginId=='anonymousUser'}" onclick="afterLoginComment()">등록</button>
+                                <!--                                <button th:if="${loginId!='anonymousUser'}" class="btn btn-primary float-end my-3" onclick="addParentComment()" >댓글 등록</button>-->
+<!--                                <button th:if="${loginId=='anonymousUser'}" class="btn btn-primary float-end my-3" onclick="afterLoginComment()" >댓글 등록</button>-->
+                            </div>
+                       </div>
+                        <div class="reply" th:each="comment:${parentComment.commentList}">
+                            <div th:text="${comment.username}">dd</div>
+                            <div th:text="${comment.text}" style="word-break: break-all"><p>ㅋㅋzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz</p></div>
+                            <div th:text="${comment.dateCreated}" style="font-size: 12px">2016.01.01 21:33:22</div>
+                        </div>
+                    </div>
+                </th:block>
+                </div>
     </div>
 </body>
 <script type="application/javascript" th:inline="javascript">
     let likeCount = [[${userText.texts[0].likeCount}]];
     let contentId = [[${userText.texts[0].contentId}]];
+    let loginId = [[${loginId}]];
+
+    function toggleReply(button) {
+        let nextElementSibling = button.nextElementSibling;
+
+            if (nextElementSibling.style.display === "none" || nextElementSibling.style.display === "") {
+                nextElementSibling.style.display = "flex";
+                nextElementSibling.style.flexDirection = "column";
+
+            } else {
+                nextElementSibling.style.display = "none";
+            }
+    }
+
     function notMyThing() {
         alert("작성자만 수정 가능합니다.")
     }
+
     function goBack() {
         window.history.back();
     }
+
     function afterLoginComment() {
         alert("로그인 후 댓글 작성 가능합니다.")
     }
@@ -110,10 +174,11 @@
                 console.error('Error:', error);
             });
     }
-
-    function addComment() {
-        const commentText= document.getElementById('commentText').value;
-        const tbody = document.querySelector('tbody');
+    function addComment(parentCommentId,button) {
+        const commentText=button.parentNode.previousElementSibling.value;
+        const commenTextarea = button.parentNode.previousElementSibling;
+        const commentContainer = button.parentElement.parentElement.parentElement;
+        const commentContainers = document.getElementsByClassName('comment-containers')[0];
         // AJAX 통신
         fetch('/home/addComment', {
             method: 'POST',
@@ -121,44 +186,129 @@
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: contentId,
+                contentId: contentId,
+                parentCommentId:parentCommentId,
                 text:commentText
             }),
         })
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                // 반복문을 통해 여러 개의 <tr> 생성
 
-                    // 새로운 <tr> 요소 생성
-                    let tr = document.createElement('tr');
+                let replyContainer = document.createElement('div');
 
-                    // 첫 번째 <td> 생성
-                    let td1 = document.createElement('td');
-                    td1.textContent = data.username;
-                    tr.appendChild(td1);
+                let username = document.createElement('div');
+                username.textContent = data.username;
 
-                    // 두 번째 <td> 생성
-                    let td2 = document.createElement('td');
-                    td2.style.wordBreak = 'break-all';
+                replyContainer.appendChild(username);
+
+                let text = document.createElement('div');
+                text.style.wordBreak = 'break-all';
+
+                let p = document.createElement('p');
+                p.textContent = data.text;
+                text.appendChild(p);
+
+                replyContainer.appendChild(text);
+
+                let dateCreated = document.createElement('div');
+                dateCreated.style.fontSize = '12px';
+                dateCreated.textContent = data.dateCreated;
+
+                replyContainer.appendChild(dateCreated);
+                replyContainer.className = "reply";
+                commentContainer.appendChild(replyContainer);
+
+                commenTextarea.value = "";
+
+
+            })
+    }
+    function addParentComment() {
+
+        const parentCommentText= document.getElementById('parentCommentText').value;
+        const commentContainers = document.getElementsByClassName('comment-containers')[0];
+        // AJAX 통신
+        fetch('/home/addParentComment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contentId: contentId,
+                text:parentCommentText
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+
+                    let commentContainer = document.createElement('div');
+
+                    let username = document.createElement('div');
+                    username.textContent = data.username;
+
+                    commentContainer.appendChild(username);
+
+                    let text = document.createElement('div');
+                    text.style.wordBreak = 'break-all';
 
                     let p = document.createElement('p');
                     p.textContent = data.text;
-                    td2.appendChild(p);
+                    text.appendChild(p);
 
-                    tr.appendChild(td2);
+                    commentContainer.appendChild(text);
 
-                    // 세 번째 <td> 생성
-                    let td3 = document.createElement('td');
-                    td3.style.fontSize = '12px';
-                    td3.textContent = data.dateCreated;
-                    tr.appendChild(td3);
+                    let dateCreated = document.createElement('div');
+                    dateCreated.style.fontSize = '12px';
+                    dateCreated.textContent = data.dateCreated;
 
-                    // tbody에 생성한 <tr> 추가
-                    tbody.appendChild(tr);
+                    commentContainer.appendChild(dateCreated);
 
-                    document.getElementById('commentText').value="";
+                    let button = document.createElement('button');
+                    button.className = "btn btn-secondary mb-3";
+                    button.style.width = "10%";
+                    button.onclick = function() {
+                        toggleReply(this);
+                    };
+                    button.textContent = "답글";
 
+                    commentContainer.appendChild(button);
+
+                    let replyContainer = document.createElement('div');
+                    replyContainer.className = "reply-container";
+
+                    let replyParentText = document.createElement('textarea');
+                    replyParentText.style.resize="none";
+
+                    let replyParentTextButton = document.createElement('button');
+                    replyParentTextButton.className="btn btn-dark";
+                    replyParentTextButton.style.width = "10%";
+                    replyParentTextButton.textContent = "등록";
+                if (loginId != 'anonymousUser') {
+                    // 로그인한 상태
+
+                    replyParentTextButton.onclick=function() {
+                        // addComment 함수 호출
+                        addComment(data.parentId, this); // 예시로 parentComment.parentId를 123으로 전달
+                    };
+                } else {
+                    // 로그인하지 않은 상태
+                    replyParentTextButton.onclick=function() {
+                        // afterLoginComment 함수 호출
+                        afterLoginComment();
+                    };
+                }
+
+                    let replyParentTextButtonContainer = document.createElement('div');
+                    replyParentTextButtonContainer.className="replyButton";
+                    replyParentTextButtonContainer.appendChild(replyParentTextButton);
+
+                    replyContainer.append(replyParentText,replyParentTextButtonContainer);
+                    commentContainer.appendChild(replyContainer);
+
+                    commentContainers.appendChild(commentContainer);
+                    document.getElementById('parentCommentText').value="";
                 // document.getElementById('likeCount').innerText = `추천: ${data.likeCount}`;
             })
     }

@@ -44,10 +44,7 @@ public class TextService {
     public void increaseLikeCount(Long id) {
         textRepository.increaseLikeCount(id);
     }
-    public void addComment(Comment comment) {
-        textRepository.addComment(comment);
-    }
-    public List<Comment> findCommentById(Long id) {
-        return textRepository.findCommentById(id);
-    }
+
+
+
 }

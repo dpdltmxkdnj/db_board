@@ -41,12 +41,6 @@ public class TextRepository{
     public void increaseLikeCount(Long id) {
         textMapper.increaseLikeCount(id);
     }
-    public void addComment(Comment comment) {
-        textMapper.addComment(comment);
-    }
 
-    public List<Comment> findCommentById(Long id) {
-        return textMapper.findCommentById(id);
-    }
 
 }

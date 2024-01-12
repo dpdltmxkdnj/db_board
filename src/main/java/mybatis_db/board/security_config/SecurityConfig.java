@@ -29,7 +29,6 @@ import static org.yaml.snakeyaml.tokens.Token.ID.Directive;
 public class SecurityConfig {
     private final LoginFailHandler loginFailHandler;
     private final LoginSuccessHandler loginSuccessHandler;
-    private final AuthenticationEntryPoint ajaxLoginAuthenticationEntryPoint;
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
@@ -50,7 +49,7 @@ public class SecurityConfig {
                         return config;
                     }
                 }))
-                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/home/updateLikeCount","/home/addComment")
+                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/home/updateLikeCount","/home/addComment","/home/addParentComment")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests((requests)->requests.requestMatchers("/home/add").authenticated()
                         .anyRequest().permitAll())

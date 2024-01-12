@@ -22,6 +22,5 @@ public interface TextMapper {
     void increaseViewCount(Long id);
     void increaseLikeCount(Long id);
 
-    void addComment(Comment comment);
-    List<Comment> findCommentById(Long id);
+
 }
