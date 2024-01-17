@@ -11,6 +11,8 @@ import java.util.List;
 @Mapper
 public interface TextMapper {
     void save(Text text);
+    void delete(Long id);
+
 
     Text findById(Long id);
 

@@ -7,6 +7,10 @@
         values (#{title}, #{text}, #{dateCreated},#{userId})
 --             all fields : content_id, title, text, date_created, view_count, like_count, unlike_count
     </insert>
+    <delete id="delete">
+        delete from content where content_id=#{id};
+
+    </delete>
     <update id="update">
         update content
         set title=#{textUpdateDto.title},

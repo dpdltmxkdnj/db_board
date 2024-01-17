@@ -9,6 +9,7 @@ import mybatis_db.board.repository.UserRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,10 +17,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+
+    @Transactional
     public User save(UserLoginRegisterDto userLoginRegisterDto) {
         String loginId = userLoginRegisterDto.getLoginId();
         String password = userLoginRegisterDto.getPassword();

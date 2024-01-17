@@ -39,7 +39,6 @@ public class loginController {
     @PostMapping("/login/register")
     public String loginRegister(@Validated @ModelAttribute UserLoginRegisterDto userLoginRegisterDto, BindingResult bindingResult) {
         if (!userLoginRegisterDto.getPassword().equals(userLoginRegisterDto.getPasswordIdentify())) {
-//            bindingResult.reject("passwordIdentify");
             userLoginRegisterDto.setPasswordBlank(true);
             return "login/register";
 
@@ -56,12 +55,10 @@ public class loginController {
         return "redirect:/home";
     }
 //    @PostMapping("/login")
-//    public String login(@Validated @ModelAttribute("user") UserLoginDto userLoginDto, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return "login/login";
-//        }
+//    public String login() {
 //
-//        return "redirect:/home";
+//
+//        return "redirect:/login";
 //    }
 
 

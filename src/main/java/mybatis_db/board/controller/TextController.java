@@ -51,9 +51,6 @@ public class TextController {
         int pageSize=10;
         int allPageButton=allTextCount%pageSize==0?allTextCount/pageSize:allTextCount/pageSize+1;
 
-
-
-
         if (searchType != null && searchValue != null && searchType.equals("제목") && !searchValue.isBlank()) {
             allUserTexts = userService.findAllUserTextByTitle(searchValue);
         } else if (searchType != null && searchValue != null && searchType.equals("작성자") && !searchValue.isBlank()) {
@@ -140,6 +137,14 @@ public class TextController {
        textService.update(id,textUpdateDto);
 
         return "redirect:/home";
+    }
+
+    @PostMapping("/home/{contentId}/delete")
+    @ResponseBody
+    public String textDelete(@PathVariable(name = "contentId") Long id,Model model) {
+        System.out.println(id);
+        textService.delete(id);
+        return "/home";
     }
 
     @PostMapping("/home/updateLikeCount")

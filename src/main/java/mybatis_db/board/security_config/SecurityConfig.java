@@ -49,7 +49,7 @@ public class SecurityConfig {
                         return config;
                     }
                 }))
-                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/home/updateLikeCount","/home/addComment","/home/addParentComment")
+                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/home/updateLikeCount","/home/addComment","/home/addParentComment","/home/*/delete")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests((requests)->requests.requestMatchers("/home/add").authenticated()
                         .anyRequest().permitAll())

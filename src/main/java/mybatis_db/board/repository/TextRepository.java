@@ -27,6 +27,10 @@ public class TextRepository{
     public List<Text> findAll() {
         return textMapper.findAll();
     }
+    public void delete(Long id) {
+        textMapper.delete(id);
+    }
+
 
     public void update(Long id, TextUpdateDto textUpdateDto) {
         textMapper.update(id,textUpdateDto);
