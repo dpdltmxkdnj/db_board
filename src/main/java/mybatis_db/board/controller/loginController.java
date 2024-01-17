@@ -54,12 +54,7 @@ public class loginController {
         userService.save(userLoginRegisterDto);
         return "redirect:/home";
     }
-//    @PostMapping("/login")
-//    public String login() {
-//
-//
-//        return "redirect:/login";
-//    }
+
 
 
 
