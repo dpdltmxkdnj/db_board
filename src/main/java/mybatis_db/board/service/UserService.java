@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mybatis_db.board.domain.PageRequest;
 import mybatis_db.board.domain.Text;
 import mybatis_db.board.domain.User;
+import mybatis_db.board.dto.BoardHomeTextsDto;
 import mybatis_db.board.dto.UserLoginRegisterDto;
 import mybatis_db.board.repository.UserRepository;
 import org.jetbrains.annotations.NotNull;
@@ -41,23 +42,23 @@ public class UserService {
     public User findById(String id) {
         return userRepository.findById(id);
     }
-    public List<User> findAllUserText() {
+    public List<BoardHomeTextsDto> findAllUserText() {
         return userRepository.findAllUserText();
     }
-    public User findUserText(Long id) {
+    public BoardHomeTextsDto findUserText(Long id) {
         return userRepository.findUserText(id);
     }
-    public List<User> findAllUserTextByTitle(String title) {
+    public List<BoardHomeTextsDto> findAllUserTextByTitle(String title) {
         return userRepository.findAllUserTextByTitle(title);
     }
 
-    public List<User> findAllUserTextByUsername(String username) {
+    public List<BoardHomeTextsDto> findAllUserTextByUsername(String username) {
         return userRepository.findAllUserTextByUsername(username);
     }
-    public List<User> findAllUserTextByUsernameAndTitle(String usernameAndTitle) {
+    public List<BoardHomeTextsDto> findAllUserTextByUsernameAndTitle(String usernameAndTitle) {
         return userRepository.findAllUserTextByUsernameAndTitle(usernameAndTitle);
     }
-    public List<User> selectWithPaging(PageRequest pageRequest) {
+    public List<BoardHomeTextsDto> selectWithPaging(PageRequest pageRequest) {
         return userRepository.selectWithPaging(pageRequest);
     }
 }

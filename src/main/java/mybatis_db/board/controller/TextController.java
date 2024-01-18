@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mybatis_db.board.domain.*;
+import mybatis_db.board.dto.BoardHomeTextsDto;
 import mybatis_db.board.dto.TextSaveDto;
 import mybatis_db.board.dto.TextUpdateDto;
 import mybatis_db.board.service.CommentService;
@@ -28,6 +30,7 @@ import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class TextController {
 
     private final TextService textService;
@@ -45,7 +48,7 @@ public class TextController {
     @GetMapping("/home")
     public String home(Model model,@RequestParam(name = "page",required = false,defaultValue = "1") Integer currentPage,@RequestParam(name = "searchType",required = false) String searchType,@RequestParam(name = "searchValue",required = false) String searchValue) {
 
-        List<User> allUserTexts = null;
+        List<BoardHomeTextsDto> allUserTexts = null;
         int allTextCount = textService.allTextCount();
 
         int pageSize=10;
@@ -69,6 +72,7 @@ public class TextController {
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("allUserTexts",allUserTexts);
+        log.info("allUserTexts = {}",allUserTexts);
         isLogin(model);
 
         return "home";
@@ -104,7 +108,7 @@ public class TextController {
     public String text(@PathVariable(name = "id") Long id,Model model) {
         boolean isMyThing = false;
 
-        User userText = userService.findUserText(id);
+        BoardHomeTextsDto userText = userService.findUserText(id);
         textService.increaseViewCount(id);
 
         List<Comment> parentComments = commentService.findCommentById(id);

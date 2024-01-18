@@ -31,27 +31,27 @@
                 <div class="me-auto" th:text="${userText.username}">우까우까꾸 </div>
                 <div class="d-flex justify-content-end">
 
-                    <div th:text="|조회: ${userText.texts[0].viewCount}|">조회:</div>
+                    <div th:text="|조회: ${userText.viewCount}|">조회:</div>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">제목</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" th:field="${userText.texts[0].title}" disabled>
+                <input type="text" class="form-control" id="exampleFormControlInput1" th:field="${userText.title}" disabled>
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">내용</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" style="resize: none;height: 300px" th:field="${userText.texts[0].text}" disabled></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" style="resize: none;height: 300px" th:field="${userText.text}" disabled></textarea>
             </div>
 
             <div style="display: flex;justify-content: center" class="mb-3">
                 <button style="background-color:white;border:none;font-size: 35px" onclick="recommend()">👍</button>
-                <div  style="font-size: 35px"  class="mx-3" id="likeCount" th:text="'추천: '+${userText.texts[0].likeCount}">추천:</div>
+                <div  style="font-size: 35px"  class="mx-3" id="likeCount" th:text="'추천: '+${userText.likeCount}">추천:</div>
             </div>
             <div class="d-flex justify-content-center">
                 <div th:if="${isMyThing}">
                 <button class="btn btn-primary  me-3"
                         type="button"
-                        th:onclick="|location.href='@{/home/{contentId}/edit(contentId=${userText.texts[0].contentId})}'|"
+                        th:onclick="|location.href='@{/home/{contentId}/edit(contentId=${userText.contentId})}'|"
                 >수정하기</button>
                 </div>
                 <div th:if="${!isMyThing}">
@@ -101,8 +101,8 @@
     </div>
 </body>
 <script type="application/javascript" th:inline="javascript">
-    let likeCount = [[${userText.texts[0].likeCount}]];
-    let contentId = [[${userText.texts[0].contentId}]];
+    let likeCount = [[${userText.likeCount}]];
+    let contentId = [[${userText.contentId}]];
     let loginId = [[${loginId}]];
     let isMyThing = [[${isMyThing}]];
 

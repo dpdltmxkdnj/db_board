@@ -11,7 +11,6 @@ public class User {
     private String password;
     private String dateCreated;
     private String username;
-    private List<Text> texts;
 //    private Text text;
 
     public User() {

@@ -73,15 +73,25 @@
         <tbody class="table-group-divider">
 
             <th:block th:each="allUserText:${allUserTexts}">
-                <tr th:each="text:${allUserText.texts}">
-                    <td th:text="${text.contentId}">1</td>
-                    <td ><a th:href="@{/home/{textId}(textId=${text.contentId})}" th:text="${text.title}">ㅋㅋzzzzzzzzzzzzzz</a></td>
+                <tr>
+                    <td th:text="${allUserText.contentId}">1</td>
+                    <td ><a th:href="@{/home/{textId}(textId=${allUserText.contentId})}" th:text="${allUserText.title}">ㅋㅋzzzzzzzzzzzzzz</a></td>
                     <td th:text="${allUserText.username}">dd</td>
-                    <td th:text="${text.dateCreated}" style="font-size: 12px">2016.01.01</td>
-                    <td th:text="${text.viewCount}" >1</td>
-                    <td th:text="${text.likeCount}">3</td>
+                    <td th:text="${allUserText.dateCreated}" style="font-size: 12px">2016.01.01</td>
+                    <td th:text="${allUserText.viewCount}" >1</td>
+                    <td th:text="${allUserText.likeCount}">3</td>
                 </tr>
             </th:block>
+<!--            <th:block th:each="allUserText:${allUserTexts}">-->
+<!--                <tr th:each="text:${allUserText.texts}">-->
+<!--                    <td th:text="${text.contentId}">1</td>-->
+<!--                    <td ><a th:href="@{/home/{textId}(textId=${text.contentId})}" th:text="${text.title}">ㅋㅋzzzzzzzzzzzzzz</a></td>-->
+<!--                    <td th:text="${allUserText.username}">dd</td>-->
+<!--                    <td th:text="${text.dateCreated}" style="font-size: 12px">2016.01.01</td>-->
+<!--                    <td th:text="${text.viewCount}" >1</td>-->
+<!--                    <td th:text="${text.likeCount}">3</td>-->
+<!--                </tr>-->
+<!--            </th:block>-->
         </tbody>
     </table>
     <hr/>

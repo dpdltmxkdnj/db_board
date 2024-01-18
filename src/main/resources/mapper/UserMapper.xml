@@ -10,7 +10,7 @@
     <insert id="save">
         insert into user (login_id, password,username,date_created) values (#{loginId},#{password},#{username},#{dateCreated})
     </insert>
-    <select id="selectWithPaging" resultMap="userText">
+    <select id="selectWithPaging" resultType="BoardHomeTextsDto">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -38,7 +38,7 @@
 <!--        from content c,user u-->
 <!--        where c.user_id=u.user_id;-->
 <!--    </select>-->
-    <select id="findAllUserText" resultMap="userText">
+    <select id="findAllUserText" resultType="BoardHomeTextsDto">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -50,10 +50,10 @@
                u.username as username,
                u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id;
+        where c.user_id=u.user_id order by c.date_created desc;
     </select>
 
-    <select id="findUserText" resultMap="userText">
+    <select id="findUserText" resultType="BoardHomeTextsDto">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -65,9 +65,9 @@
                u.username as username,
                 u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id and c.content_id=#{id};
+        where c.user_id=u.user_id and c.content_id=#{id} order by c.date_created desc;
     </select>
-    <select id="findAllUserTextByTitle" resultMap="userText">
+    <select id="findAllUserTextByTitle" resultType="BoardHomeTextsDto">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -79,9 +79,9 @@
                u.username as username,
                u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id and c.title like concat('%',#{title},'%');
+        where c.user_id=u.user_id and c.title like concat('%',#{title},'%') order by c.date_created desc;
     </select>
-    <select id="findAllUserTextByUsername" resultMap="userText">
+    <select id="findAllUserTextByUsername" resultType="BoardHomeTextsDto">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -93,9 +93,9 @@
                u.username as username,
                u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id and u.username like concat('%',#{username},'%');
+        where c.user_id=u.user_id and u.username like concat('%',#{username},'%') order by c.date_created desc;
     </select>
-    <select id="findAllUserTextByUsernameAndTitle" resultMap="userText">
+    <select id="findAllUserTextByUsernameAndTitle" resultType="BoardHomeTextsDto">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -107,22 +107,36 @@
                u.username as username,
                u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id and (u.username like concat('%',#{usernameAndTitle},'%') or c.title like concat('%',#{usernameAndTitle},'%'));
+        where c.user_id=u.user_id and (u.username like concat('%',#{usernameAndTitle},'%') or c.title like concat('%',#{usernameAndTitle},'%')) order by c.date_created desc;
     </select>
-    <resultMap id="userText" type="User">
-        <id property="userId" column="userId" />
-        <result property="loginId" column="loginId"/>
-        <result property="username" column="username"/>
-        <collection property="texts" ofType="Text">
-            <id property="contentId" column="contentId"/>
-            <result property="title" column="title"/>
-            <result property="text" column="text"/>
-            <result property="dateCreated" column="dateCreated"/>
-            <result property="viewCount" column="viewCount"/>
-            <result property="likeCount" column="likeCount"/>
-            <result property="unlikeCount" column="unlikeCount"/>
-        </collection>
-    </resultMap>
+<!--    <resultMap id="userText" type="User">-->
+<!--        <id property="userId" column="userId" />-->
+<!--        <result property="loginId" column="loginId"/>-->
+<!--        <result property="username" column="username"/>-->
+<!--        <collection property="texts" ofType="Text">-->
+<!--            <id property="contentId" column="contentId"/>-->
+<!--            <result property="title" column="title"/>-->
+<!--            <result property="text" column="text"/>-->
+<!--            <result property="dateCreated" column="dateCreated"/>-->
+<!--            <result property="viewCount" column="viewCount"/>-->
+<!--            <result property="likeCount" column="likeCount"/>-->
+<!--            <result property="unlikeCount" column="unlikeCount"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+<!--    <resultMap id="userText" type="User">-->
+<!--        <id property="userId" column="userId" />-->
+<!--        <result property="loginId" column="loginId"/>-->
+<!--        <result property="username" column="username"/>-->
+<!--        <collection property="texts" ofType="Text">-->
+<!--            <id property="contentId" column="contentId"/>-->
+<!--            <result property="title" column="title"/>-->
+<!--            <result property="text" column="text"/>-->
+<!--            <result property="dateCreated" column="dateCreated"/>-->
+<!--            <result property="viewCount" column="viewCount"/>-->
+<!--            <result property="likeCount" column="likeCount"/>-->
+<!--            <result property="unlikeCount" column="unlikeCount"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
 
 </mapper>
 
