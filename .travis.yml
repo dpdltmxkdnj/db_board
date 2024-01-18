@@ -1,0 +1,20 @@
+language: java
+jdk: openjdk17
+
+branches:
+  only:
+    - master    # master 브랜치로 푸쉬했을 때만 빌드
+
+# Travis CI 서버의 HOME
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.gradle'
+
+script: "./gradlew clean build"   # master 브랜치에 푸쉬했을 경우 실행될 스크립트
+
+#CI 실행 완료 시 메일로 알람
+notifications:
+  email:
+    recipients:
+      - dpdltmxkdnj@naver.com
