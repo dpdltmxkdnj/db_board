@@ -1,31 +1,20 @@
 package mybatis_db.board.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mybatis_db.board.domain.*;
-import mybatis_db.board.dto.BoardHomeTextsDto;
-import mybatis_db.board.dto.TextSaveDto;
-import mybatis_db.board.dto.TextUpdateDto;
+import mybatis_db.board.dto.*;
 import mybatis_db.board.service.CommentService;
 import mybatis_db.board.service.TextService;
 import mybatis_db.board.service.UserService;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.sql.Array;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -37,18 +26,18 @@ public class TextController {
     private final UserService userService;
     private final CommentService commentService;
     @ModelAttribute("textSearchType")
-    public List<TextSearchType> textSearchType() {
-        List<TextSearchType> textSearchType = new ArrayList<>();
-        textSearchType.add(new TextSearchType("전체","전체"));
-        textSearchType.add(new TextSearchType("제목","제목"));
-        textSearchType.add(new TextSearchType("작성자","작성자"));
+    public List<TextSearchTypeDto> textSearchType() {
+        List<TextSearchTypeDto> textSearchType = new ArrayList<>();
+        textSearchType.add(new TextSearchTypeDto("전체","전체"));
+        textSearchType.add(new TextSearchTypeDto("제목","제목"));
+        textSearchType.add(new TextSearchTypeDto("작성자","작성자"));
 
         return textSearchType;
     }
     @GetMapping("/home")
     public String home(Model model,@RequestParam(name = "page",required = false,defaultValue = "1") Integer currentPage,@RequestParam(name = "searchType",required = false) String searchType,@RequestParam(name = "searchValue",required = false) String searchValue) {
 
-        List<BoardHomeTextsDto> allUserTexts = null;
+        List<BoardHomeTexts> allUserTexts = null;
         int allTextCount = textService.allTextCount();
 
         int pageSize=10;
@@ -62,7 +51,8 @@ public class TextController {
             allUserTexts = userService.findAllUserTextByUsernameAndTitle(searchValue);
         } else {
             int pageChange=(currentPage-1)*10;
-            allUserTexts = userService.selectWithPaging(new PageRequest(pageChange, pageSize));
+            allUserTexts = userService.selectWithPaging(new PageRequestDto(pageChange, pageSize));
+
         }
         model.addAttribute("allPageButton", allPageButton);
         model.addAttribute("allTextCount", allTextCount);
@@ -108,7 +98,7 @@ public class TextController {
     public String text(@PathVariable(name = "id") Long id,Model model) {
         boolean isMyThing = false;
 
-        BoardHomeTextsDto userText = userService.findUserText(id);
+        BoardHomeTexts userText = userService.findUserText(id);
         textService.increaseViewCount(id);
 
         List<Comment> parentComments = commentService.findCommentById(id);

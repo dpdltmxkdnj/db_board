@@ -17,9 +17,6 @@ import java.util.List;
 public class TextService {
     private final TextRepository textRepository;
     public Text save(Text text) {
-        LocalDateTime now = LocalDateTime.now();
-        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        text.setDateCreated(formatedNow);
         return textRepository.save(text);
     }
     public void delete(Long id) {

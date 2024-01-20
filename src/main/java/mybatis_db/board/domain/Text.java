@@ -27,11 +27,7 @@ public class Text {
         this.text = text;
         this.userId=userId;
     }
-    public Text(String title, String text, String dateCreated) {
-        this.title = title;
-        this.text = text;
-        this.dateCreated = dateCreated;
-    }
+
 
 
 }

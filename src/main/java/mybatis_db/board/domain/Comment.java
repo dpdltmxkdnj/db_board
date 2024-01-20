@@ -19,18 +19,16 @@ public class Comment {
     public Comment() {
 
     }
-    public Comment(Long contentId, String text, String username,String dateCreated,String loginId) {
+    public Comment(Long contentId, String text, String username,String loginId) {
         this.contentId = contentId;
         this.text = text;
         this.username = username;
-        this.dateCreated = dateCreated;
         this.loginId=loginId;
     }
-    public Comment(Long contentId, String text, String username,String dateCreated,Long commentId,Long level,String loginId) {
+    public Comment(Long contentId, String text, String username,Long commentId,Long level,String loginId) {
         this.contentId = contentId;
         this.text = text;
         this.username = username;
-        this.dateCreated = dateCreated;
         this.commentId = commentId;
         this.level = level;
         this.loginId=loginId;

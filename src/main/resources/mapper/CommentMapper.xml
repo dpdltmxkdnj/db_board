@@ -3,14 +3,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis_db.board.repository.CommentMapper">
 
-    <insert id="addParentComment">
-        insert into comment (comment_id, content_id, text, date_created, username,login_id)
-        values (#{commentId}, #{contentId}, #{text},#{dateCreated},#{username},#{loginId})
+    <insert id="addParentComment" >
+        insert into comment (content_id, text, username,login_id)
+        values (#{contentId}, #{text},#{username},#{loginId})
 --             all fields : content_id, title, text, date_created, view_count, like_count, unlike_count
+        <selectKey keyProperty="dateCreated,parentId" resultType="Comment" order="AFTER">
+            select date_Created,parent_id from comment where parent_id=LAST_INSERT_ID();
+        </selectKey>
     </insert>
-    <insert id="addComment">
-        insert into comment (comment_id, content_id, text, date_created, username,level,login_id)
-        values (#{commentId}, #{contentId}, #{text},#{dateCreated},#{username},#{level},#{loginId})
+    <insert id="addComment" useGeneratedKeys="true" keyProperty="parentId">
+        insert into comment (comment_id, content_id, text, username,level,login_id)
+        values (#{commentId}, #{contentId}, #{text},#{username},#{level},#{loginId})
+        <selectKey keyProperty="dateCreated,parentId" resultType="Comment" order="AFTER">
+            select date_Created,parent_id from comment where parent_id=LAST_INSERT_ID();
+        </selectKey>
 --             all fields : content_id, title, text, date_created, view_count, like_count, unlike_count
     </insert>
     <select id="findCommentParentId" resultType="Comment">

@@ -8,9 +8,9 @@
         where login_id=#{id}
     </select>
     <insert id="save">
-        insert into user (login_id, password,username,date_created) values (#{loginId},#{password},#{username},#{dateCreated})
+        insert into user (login_id, password,username) values (#{loginId},#{password},#{username})
     </insert>
-    <select id="selectWithPaging" resultType="BoardHomeTextsDto">
+    <select id="selectWithPaging" resultType="BoardHomeTexts">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -22,7 +22,7 @@
                u.username as username,
                u.user_id as userId
                 from content c,user u
-                where c.user_id=u.user_id order by c.date_created desc limit #{size} offset #{page};
+                where c.user_id=u.user_id order by c.content_id desc limit #{size} offset #{page};
     </select>
 
 <!--    <select id="findAllUser">-->
@@ -38,7 +38,7 @@
 <!--        from content c,user u-->
 <!--        where c.user_id=u.user_id;-->
 <!--    </select>-->
-    <select id="findAllUserText" resultType="BoardHomeTextsDto">
+    <select id="findAllUserText" resultType="BoardHomeTexts">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -50,10 +50,10 @@
                u.username as username,
                u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id order by c.date_created desc;
+        where c.user_id=u.user_id order by c.content_id desc;
     </select>
 
-    <select id="findUserText" resultType="BoardHomeTextsDto">
+    <select id="findUserText" resultType="BoardHomeTexts">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -65,9 +65,9 @@
                u.username as username,
                 u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id and c.content_id=#{id} order by c.date_created desc;
+        where c.user_id=u.user_id and c.content_id=#{id} order by c.content_id desc;
     </select>
-    <select id="findAllUserTextByTitle" resultType="BoardHomeTextsDto">
+    <select id="findAllUserTextByTitle" resultType="BoardHomeTexts">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -79,9 +79,9 @@
                u.username as username,
                u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id and c.title like concat('%',#{title},'%') order by c.date_created desc;
+        where c.user_id=u.user_id and c.title like concat('%',#{title},'%') order by c.content_id desc;
     </select>
-    <select id="findAllUserTextByUsername" resultType="BoardHomeTextsDto">
+    <select id="findAllUserTextByUsername" resultType="BoardHomeTexts">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -93,9 +93,9 @@
                u.username as username,
                u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id and u.username like concat('%',#{username},'%') order by c.date_created desc;
+        where c.user_id=u.user_id and u.username like concat('%',#{username},'%') order by c.content_id desc;
     </select>
-    <select id="findAllUserTextByUsernameAndTitle" resultType="BoardHomeTextsDto">
+    <select id="findAllUserTextByUsernameAndTitle" resultType="BoardHomeTexts">
         select c.content_id as contentId,
                c.title as title,
                c.text as text,
@@ -107,7 +107,7 @@
                u.username as username,
                u.user_id as userId
         from content c,user u
-        where c.user_id=u.user_id and (u.username like concat('%',#{usernameAndTitle},'%') or c.title like concat('%',#{usernameAndTitle},'%')) order by c.date_created desc;
+        where c.user_id=u.user_id and (u.username like concat('%',#{usernameAndTitle},'%') or c.title like concat('%',#{usernameAndTitle},'%')) order by c.content_id desc;
     </select>
 <!--    <resultMap id="userText" type="User">-->
 <!--        <id property="userId" column="userId" />-->

@@ -30,14 +30,17 @@ public class CommentController {
         String text =  jsonValue.get("text");
         Long contentId =  Long.valueOf(jsonValue.get("contentId"));
 
-        LocalDateTime now = LocalDateTime.now();
-        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Comment comment = new Comment(contentId, text, username,formatedNow,loginId);
+
+        Comment comment = new Comment(contentId, text, username,loginId);
 
         commentService.addParentComment(comment);
-        Long parentId = commentService.findCommentParentId(contentId).getParentId();
-        comment.setParentId(parentId);
-
+        System.out.println("ParentComment:"+comment.getParentId());
+//        Comment commentParentId = commentService.findCommentParentId(contentId);
+//        Long parentId = commentParentId.getParentId();
+//        String dateCreated = commentParentId.getDateCreated();
+//
+//        comment.setParentId(parentId);
+//        comment.setDateCreated(dateCreated);
         return comment;
     }
     @PostMapping("/home/addComment")
@@ -50,12 +53,11 @@ public class CommentController {
         Long contentId =  Long.valueOf(jsonValue.get("contentId"));
         Long parentCommentId =  Long.valueOf(jsonValue.get("parentCommentId"));
 
-        LocalDateTime now = LocalDateTime.now();
-        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Comment comment = new Comment(contentId, text, username,formatedNow,parentCommentId,Long.valueOf(  "1"),loginId);
+
+        Comment comment = new Comment(contentId, text, username,parentCommentId,Long.valueOf(  "1"),loginId);
 
         commentService.addComment(comment);
-
+        System.out.println("comment date:"+comment.getDateCreated());
         return comment;
     }
 
