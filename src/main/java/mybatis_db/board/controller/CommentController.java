@@ -2,6 +2,7 @@ package mybatis_db.board.controller;
 
 import lombok.RequiredArgsConstructor;
 import mybatis_db.board.domain.Comment;
+import mybatis_db.board.domain.User;
 import mybatis_db.board.service.CommentService;
 import mybatis_db.board.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,39 +26,37 @@ public class CommentController {
     @ResponseBody
     public Comment addParentComment(@RequestBody Map<String, String> jsonValue) {
         String loginId = getLoginId();
-        String username = userService.findById(loginId).getUsername();
+        User user = userService.findById(loginId);
+        String username = user.getUsername();
+        Long userId = user.getUserId();
 
         String text =  jsonValue.get("text");
         Long contentId =  Long.valueOf(jsonValue.get("contentId"));
 
 
-        Comment comment = new Comment(contentId, text, username,loginId);
+        Comment comment = new Comment(contentId, text, username,userId);
 
         commentService.addParentComment(comment);
-        System.out.println("ParentComment:"+comment.getParentId());
-//        Comment commentParentId = commentService.findCommentParentId(contentId);
-//        Long parentId = commentParentId.getParentId();
-//        String dateCreated = commentParentId.getDateCreated();
-//
-//        comment.setParentId(parentId);
-//        comment.setDateCreated(dateCreated);
+
         return comment;
     }
     @PostMapping("/home/addComment")
     @ResponseBody
     public Comment addComment(@RequestBody Map<String, String> jsonValue) {
         String loginId = getLoginId();
-        String username = userService.findById(loginId).getUsername();
+        User user = userService.findById(loginId);
+        String username = user.getUsername();
+        Long userId = user.getUserId();
+
 
         String text =  jsonValue.get("text");
         Long contentId =  Long.valueOf(jsonValue.get("contentId"));
         Long parentCommentId =  Long.valueOf(jsonValue.get("parentCommentId"));
 
 
-        Comment comment = new Comment(contentId, text, username,parentCommentId,Long.valueOf(  "1"),loginId);
+        Comment comment = new Comment(contentId, text, username,parentCommentId,Long.valueOf(  "1"),userId);
 
         commentService.addComment(comment);
-        System.out.println("comment date:"+comment.getDateCreated());
         return comment;
     }
 

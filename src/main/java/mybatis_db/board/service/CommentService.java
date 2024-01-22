@@ -22,8 +22,5 @@ public class CommentService {
     public List<Comment> findCommentById(Long id) {
         return commentRepository.findCommentById(id);
     }
-    @Transactional(readOnly = true)
-    public Comment findCommentParentId(Long id) {
-        return commentRepository.findCommentParentId(id);
-    }
+
 }

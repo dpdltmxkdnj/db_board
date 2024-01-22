@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mybatis_db.board.domain.*;
 import mybatis_db.board.dto.*;
+import mybatis_db.board.service.BoardTextService;
 import mybatis_db.board.service.CommentService;
 import mybatis_db.board.service.TextService;
 import mybatis_db.board.service.UserService;
@@ -25,6 +26,8 @@ public class TextController {
     private final TextService textService;
     private final UserService userService;
     private final CommentService commentService;
+    private final BoardTextService boardTextService;
+
     @ModelAttribute("textSearchType")
     public List<TextSearchTypeDto> textSearchType() {
         List<TextSearchTypeDto> textSearchType = new ArrayList<>();
@@ -44,14 +47,14 @@ public class TextController {
         int allPageButton=allTextCount%pageSize==0?allTextCount/pageSize:allTextCount/pageSize+1;
 
         if (searchType != null && searchValue != null && searchType.equals("제목") && !searchValue.isBlank()) {
-            allUserTexts = userService.findAllUserTextByTitle(searchValue);
+            allUserTexts = boardTextService.findAllUserTextByTitle(searchValue);
         } else if (searchType != null && searchValue != null && searchType.equals("작성자") && !searchValue.isBlank()) {
-            allUserTexts = userService.findAllUserTextByUsername(searchValue);
+            allUserTexts = boardTextService.findAllUserTextByUsername(searchValue);
         } else if (searchType != null && searchValue != null && searchType.equals("전체") && !searchValue.isBlank()) {
-            allUserTexts = userService.findAllUserTextByUsernameAndTitle(searchValue);
+            allUserTexts = boardTextService.findAllUserTextByUsernameAndTitle(searchValue);
         } else {
             int pageChange=(currentPage-1)*10;
-            allUserTexts = userService.selectWithPaging(new PageRequestDto(pageChange, pageSize));
+            allUserTexts = boardTextService.selectWithPaging(new PageRequestDto(pageChange, pageSize));
 
         }
         model.addAttribute("allPageButton", allPageButton);
@@ -98,11 +101,11 @@ public class TextController {
     public String text(@PathVariable(name = "id") Long id,Model model) {
         boolean isMyThing = false;
 
-        BoardHomeTexts userText = userService.findUserText(id);
+        BoardHomeTexts userText = boardTextService.findUserText(id);
         textService.increaseViewCount(id);
 
         List<Comment> parentComments = commentService.findCommentById(id);
-        System.out.println(parentComments);
+
         model.addAttribute("parentComments", parentComments);
         model.addAttribute("userText", userText);
 

@@ -3,6 +3,7 @@ package mybatis_db.board.repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mybatis_db.board.domain.Comment;
+import mybatis_db.board.mapper.CommentMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

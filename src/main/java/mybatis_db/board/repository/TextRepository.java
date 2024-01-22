@@ -6,6 +6,8 @@ import mybatis_db.board.domain.Comment;
 import mybatis_db.board.domain.Text;
 import mybatis_db.board.dto.TextUpdateDto;
 import java.util.List;
+
+import mybatis_db.board.mapper.TextMapper;
 import org.springframework.stereotype.Repository;
 
 
@@ -30,7 +32,6 @@ public class TextRepository{
     public void delete(Long id) {
         textMapper.delete(id);
     }
-
 
     public void update(Long id, TextUpdateDto textUpdateDto) {
         textMapper.update(id,textUpdateDto);

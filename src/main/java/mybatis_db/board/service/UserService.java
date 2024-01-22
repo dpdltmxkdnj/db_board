@@ -21,7 +21,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     @Transactional
     public User save(UserLoginRegisterDto userLoginRegisterDto) {
         String loginId = userLoginRegisterDto.getLoginId();
@@ -37,23 +36,5 @@ public class UserService {
     public User findById(String id) {
         return userRepository.findById(id);
     }
-    public List<BoardHomeTexts> findAllUserText() {
-        return userRepository.findAllUserText();
-    }
-    public BoardHomeTexts findUserText(Long id) {
-        return userRepository.findUserText(id);
-    }
-    public List<BoardHomeTexts> findAllUserTextByTitle(String title) {
-        return userRepository.findAllUserTextByTitle(title);
-    }
 
-    public List<BoardHomeTexts> findAllUserTextByUsername(String username) {
-        return userRepository.findAllUserTextByUsername(username);
-    }
-    public List<BoardHomeTexts> findAllUserTextByUsernameAndTitle(String usernameAndTitle) {
-        return userRepository.findAllUserTextByUsernameAndTitle(usernameAndTitle);
-    }
-    public List<BoardHomeTexts> selectWithPaging(PageRequestDto pageRequestDto) {
-        return userRepository.selectWithPaging(pageRequestDto);
-    }
 }

@@ -1,6 +1,5 @@
-package mybatis_db.board.repository;
+package mybatis_db.board.mapper;
 
-import mybatis_db.board.domain.Comment;
 import mybatis_db.board.domain.Text;
 import mybatis_db.board.dto.TextUpdateDto;
 import org.apache.ibatis.annotations.Mapper;

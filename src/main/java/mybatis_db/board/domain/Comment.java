@@ -8,29 +8,29 @@ import java.util.List;
 public class Comment {
     private Long parentId;
     private Long commentId;
-    private Long level;
+    private Long userId;
     private Long contentId;
+    private Long level;
     private String text;
     private String dateCreated;
     private String username;
-    private String loginId;
     List<Comment> commentList;
 
     public Comment() {
 
     }
-    public Comment(Long contentId, String text, String username,String loginId) {
+    public Comment(Long contentId, String text, String username,Long userId) {
         this.contentId = contentId;
         this.text = text;
         this.username = username;
-        this.loginId=loginId;
+        this.userId=userId;
     }
-    public Comment(Long contentId, String text, String username,Long commentId,Long level,String loginId) {
+    public Comment(Long contentId, String text, String username,Long commentId,Long level,Long userId) {
         this.contentId = contentId;
         this.text = text;
         this.username = username;
         this.commentId = commentId;
         this.level = level;
-        this.loginId=loginId;
+        this.userId=userId;
     }
 }

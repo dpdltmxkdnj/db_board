@@ -1,4 +1,4 @@
-package mybatis_db.board.repository;
+package mybatis_db.board.mapper;
 
 import mybatis_db.board.domain.Comment;
 import org.apache.ibatis.annotations.Mapper;
