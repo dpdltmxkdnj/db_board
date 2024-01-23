@@ -11,7 +11,7 @@
             select date_Created,parent_id from comment where parent_id=LAST_INSERT_ID();
         </selectKey>
     </insert>
-    <insert id="addComment" useGeneratedKeys="true" keyProperty="parentId">
+    <insert id="addComment">
         insert into comment (comment_id, content_id, text, username,level,user_id)
         values (#{commentId}, #{contentId}, #{text},#{username},#{level},#{userId})
         <selectKey keyProperty="dateCreated,parentId" resultType="Comment" order="AFTER">
