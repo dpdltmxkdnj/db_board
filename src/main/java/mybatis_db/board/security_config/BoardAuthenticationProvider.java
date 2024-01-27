@@ -1,6 +1,7 @@
 package mybatis_db.board.security_config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mybatis_db.board.domain.User;
 import mybatis_db.board.exception.PassWordNotFoundException;
 import mybatis_db.board.repository.UserRepository;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class BoardAuthenticationProvider implements AuthenticationProvider {
 
     private final UserService userService;
@@ -43,6 +45,7 @@ public class BoardAuthenticationProvider implements AuthenticationProvider {
         if (user!=null && passwordEncoder.matches(pwd, user.getPassword())) {
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority("user"));
+            log.info("로그인 완료");
             return new UsernamePasswordAuthenticationToken(loginId, pwd, authorities);
         } else {
             throw new BadCredentialsException("아이디 또는 비밀번호가 맞지 않습니다. 다시 확인해 주세요.");

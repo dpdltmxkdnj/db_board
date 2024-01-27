@@ -38,7 +38,10 @@ public class TextController {
         return textSearchType;
     }
     @GetMapping("/home")
-    public String home(Model model,@RequestParam(name = "page",required = false,defaultValue = "1") Integer currentPage,@RequestParam(name = "searchType",required = false) String searchType,@RequestParam(name = "searchValue",required = false) String searchValue) {
+    public String home(Model model,
+                       @RequestParam(name = "page",required = false,defaultValue = "1") Integer currentPage,
+                       @RequestParam(name = "searchType",required = false) String searchType,
+                       @RequestParam(name = "searchValue",required = false) String searchValue) {
 
         List<BoardHomeTexts> allUserTexts = null;
         int allTextCount = textService.allTextCount();
@@ -65,7 +68,6 @@ public class TextController {
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("allUserTexts",allUserTexts);
-        log.info("allUserTexts = {}",allUserTexts);
         isLogin(model);
 
         return "home";
@@ -126,7 +128,7 @@ public class TextController {
         model.addAttribute("text", text);
         return "editText";
     }
-    @PostMapping("/home/{contentId}/edit")
+    @PutMapping("/home/{contentId}/edit")
     public String textEditSave(@PathVariable(name = "contentId") Long id, @Valid @ModelAttribute("text") TextUpdateDto textUpdateDto,BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "editText";
@@ -136,10 +138,11 @@ public class TextController {
         return "redirect:/home";
     }
 
-    @PostMapping("/home/{contentId}/delete")
+
+
+    @DeleteMapping("/home/{contentId}/delete")
     @ResponseBody
     public String textDelete(@PathVariable(name = "contentId") Long id,Model model) {
-        System.out.println(id);
         textService.delete(id);
         return "/home";
     }

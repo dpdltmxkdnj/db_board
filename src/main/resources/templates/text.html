@@ -126,7 +126,7 @@
         let result = confirm("정말 삭제 하시겠습니까?");
         if (result) {
             fetch(`/home/${contentId}/delete`, {
-                method: 'POST',
+                method: 'DELETE',
             })
                 .then(response => response.text())
                 .then(data => {
@@ -193,7 +193,6 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
 
                 let replyContainer = document.createElement('div');
 
@@ -244,7 +243,6 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
 
                     let commentContainer = document.createElement('div');
 

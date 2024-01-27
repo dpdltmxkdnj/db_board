@@ -17,6 +17,7 @@
 
     <h2 class="d-flex justify-content-center">글 정보</h2>
     <form action="text.html" th:action method="post" th:object="${text}">
+        <input type="hidden" name="_method" value="PUT"/>
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">제목</label>
             <input type="text" class="form-control" id="exampleFormControlInput1" name="title" th:field="*{title}" th:errorclass="field-Error">

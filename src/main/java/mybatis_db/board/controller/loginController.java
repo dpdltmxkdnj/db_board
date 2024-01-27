@@ -52,6 +52,9 @@ public class loginController {
         }
 
         userService.save(userLoginRegisterDto);
+
+        log.info("회원가입 성공");
+
         return "redirect:/home";
     }
 
